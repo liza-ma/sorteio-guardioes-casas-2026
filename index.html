@@ -117,7 +117,6 @@ body::before {
 <div class="app">
     <div class="header">
         <h1>Sorteio de <em>Casas</em></h1>
-        <p id="instruction" style="font-weight: 600; color: var(--muted); margin-top: 10px;">Clique no botão para iniciar</p>
     </div>
 
     <div class="teams-grid" id="results-grid"></div>
@@ -190,7 +189,6 @@ async function startFullRaffle() {
     }
 
     btn.disabled = false;
-    document.getElementById('instruction').innerHTML = "Casas sorteadas! Clique nelas para os nomes.";
 }
 
 function updateSlotUI(index, team, isFinal = false) {
