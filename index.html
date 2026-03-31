@@ -8,7 +8,6 @@
 <style>
 :root {
     --red: #F3123C;
-    --red-dark: #c80e30;
     --dark: #F4F3F8;
     --dark2: #FFFFFF;
     --border: rgba(24,23,31,0.12);
@@ -24,6 +23,7 @@ body {
     min-height: 100vh;
 }
 
+/* Sutil textura de ruído */
 body::before {
     content: ''; position: fixed; inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
@@ -59,51 +59,66 @@ body::before {
     border-radius: 24px;
     padding: 30px 20px;
     text-align: center;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    min-height: 320px;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    min-height: 340px;
     display: flex; flex-direction: column; justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.team-card.active { border-color: var(--team-color); transform: scale(1.05); }
+.team-card.active { 
+    border-color: var(--red); 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+}
 
 .team-logo {
-    width: 110px; height: 110px; margin: 0 auto 15px;
-    border-radius: 50%; padding: 12px;
+    width: 140px; height: 140px; 
+    margin: 0 auto 20px;
     display: flex; align-items: center; justify-content: center;
+    transition: transform 0.3s;
 }
 .team-logo img { width: 100%; height: 100%; object-fit: contain; }
 
-.team-name { font-weight: 900; font-size: 1.5rem; text-transform: uppercase; margin-bottom: 5px; }
+.team-name { 
+    font-weight: 900; 
+    font-size: 1.6rem; 
+    text-transform: uppercase; 
+    margin-bottom: 10px;
+    color: var(--text);
+}
 
 .member-box {
-    margin-top: 20px; padding: 15px; border-radius: 16px;
-    background: #f8f8fc; border: 2px dashed var(--border);
+    margin-top: 15px; padding: 12px; border-radius: 12px;
+    background: #F8F8FC; border: 1.5px dashed var(--border);
     cursor: pointer; transition: all 0.2s;
     opacity: 0; transform: translateY(10px);
 }
 
 .team-card.finalized .member-box { opacity: 1; transform: translateY(0); }
-.member-box.revealed { border-style: solid; background: white; border-color: var(--team-color); }
+.member-box:hover { border-color: var(--red); background: #fff; }
+.member-box.revealed { border-style: solid; background: white; border-color: var(--red); }
 
-.winner-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
-.winner-name { font-size: 1.25rem; font-weight: 900; color: var(--text); margin-top: 5px; }
+.winner-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+.winner-name { font-size: 1.2rem; font-weight: 900; color: var(--text); margin-top: 4px; }
 
-.spinning-effect { animation: flicker 0.1s infinite; }
-@keyframes flicker {
-    0% { opacity: 0.5; transform: scale(0.98); }
-    100% { opacity: 1; transform: scale(1); }
+.spinning-effect { animation: pulse-border 0.2s infinite; }
+@keyframes pulse-border {
+    0% { border-color: var(--border); }
+    50% { border-color: var(--red); }
+    100% { border-color: var(--border); }
 }
 
 .controls { text-align: center; margin-top: 40px; }
 .btn-draw {
     background: var(--red); color: white; border: none;
-    padding: 20px 60px; border-radius: 20px; font-weight: 900;
-    font-size: 1.2rem; text-transform: uppercase; cursor: pointer;
+    padding: 18px 50px; border-radius: 16px; font-weight: 900;
+    font-size: 1.1rem; text-transform: uppercase; cursor: pointer;
     box-shadow: 0 10px 20px rgba(243,18,60,0.2);
-    transition: transform 0.2s;
+    transition: all 0.2s;
 }
-.btn-draw:active { transform: scale(0.95); }
-.btn-draw:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+.btn-draw:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(243,18,60,0.3); }
+.btn-draw:active { transform: translateY(0); }
+.btn-draw:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; }
 </style>
 </head>
 <body>
@@ -128,13 +143,13 @@ body::before {
 
 <script>
 const TEAMS_DATA = [
-    { id: 0, name: "SENNA", color: "#e85d8a", bg: "rgba(232,93,138,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-senna?fmt=png-alpha&hei=519&wid=489", members: ["Mariana", "Eliana", "Lais", "Daniel", "Raphael", "Heitor", "Rebeca", "Murilo"] },
-    { id: 1, name: "VETTEL", color: "#5d9ee8", bg: "rgba(93,158,232,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-vettel?fmt=png-alpha&hei=636&wid=836", members: ["Daniel", "Chico", "Rodrigo Tarifa", "Arjuna", "Rodrigo Matias", "Natalia", "Nicole", "Jarder"] },
-    { id: 2, name: "LAUDA", color: "#e8a25d", bg: "rgba(232,162,93,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-lauda?fmt=png-alpha&hei=232&wid=233", members: ["Daniela", "Filipe", "Jeff", "Fabio", "Caio", "William", "Patricia", "Nathalya", "Pedro"] },
-    { id: 3, name: "PROST", color: "#5de89e", bg: "rgba(93,232,158,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-prost?fmt=png-alpha&hei=361&wid=418", members: ["Adriana", "Peixe", "Rafael", "Deucimara", "Jesse", "Jaqueline", "Camila", "Daniele", "Leticia"] },
-    { id: 4, name: "HAMILTON", color: "#c45de8", bg: "rgba(196,93,232,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-hamilton?fmt=png-alpha&hei=485&wid=435", members: ["Thiago", "Vivaldo", "Paulinha", "Maria", "Lucas", "Alina", "Gustavo", "Vinicius"] },
-    { id: 5, name: "VERSTAPPEN", color: "#e8d15d", bg: "rgba(232,209,93,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-verstappen?fmt=png-alpha&hei=552&wid=552", members: ["Felipe", "Raphael", "Robson", "Vitoria", "Diego", "Maycol", "Vitor", "Demetrio"] },
-    { id: 6, name: "NORIS", color: "#5dd4e8", bg: "rgba(93,212,232,0.15)", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-noris?fmt=png-alpha&hei=474&wid=431", members: ["Jessica", "Caio", "Virginia", "Henrique", "Gustavo", "Veronica", "Dennis", "Victor", "Andressa"] }
+    { id: 0, name: "SENNA", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-senna?fmt=png-alpha&hei=519&wid=489", members: ["Mariana", "Eliana", "Lais", "Daniel", "Raphael", "Heitor", "Rebeca", "Murilo"] },
+    { id: 1, name: "VETTEL", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-vettel?fmt=png-alpha&hei=636&wid=836", members: ["Daniel", "Chico", "Rodrigo Tarifa", "Arjuna", "Rodrigo Matias", "Natalia", "Nicole", "Jarder"] },
+    { id: 2, name: "LAUDA", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-lauda?fmt=png-alpha&hei=232&wid=233", members: ["Daniela", "Filipe", "Jeff", "Fabio", "Caio", "William", "Patricia", "Nathalya", "Pedro"] },
+    { id: 3, name: "PROST", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-prost?fmt=png-alpha&hei=361&wid=418", members: ["Adriana", "Peixe", "Rafael", "Deucimara", "Jesse", "Jaqueline", "Camila", "Daniele", "Leticia"] },
+    { id: 4, name: "HAMILTON", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-hamilton?fmt=png-alpha&hei=485&wid=435", members: ["Thiago", "Vivaldo", "Paulinha", "Maria", "Lucas", "Alina", "Gustavo", "Vinicius"] },
+    { id: 5, name: "VERSTAPPEN", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-verstappen?fmt=png-alpha&hei=552&wid=552", members: ["Felipe", "Raphael", "Robson", "Vitoria", "Diego", "Maycol", "Vitor", "Demetrio"] },
+    { id: 6, name: "NORIS", avatar: "https://s7d1.scene7.com/is/image/Targetwebmotors/casa-noris?fmt=png-alpha&hei=474&wid=431", members: ["Jessica", "Caio", "Virginia", "Henrique", "Gustavo", "Veronica", "Dennis", "Victor", "Andressa"] }
 ];
 
 let selectedTeams = [];
@@ -146,7 +161,6 @@ function createSlots() {
         grid.innerHTML += `
             <div class="team-card" id="slot-${i}">
                 <div id="content-${i}">
-                    <div class="team-logo" style="background: #eee"></div>
                     <div class="team-name" style="color: #ccc">AGUARDANDO</div>
                 </div>
             </div>
@@ -169,7 +183,7 @@ async function startFullRaffle() {
         slot.classList.add('spinning-effect', 'active');
         
         let ticks = 0;
-        const maxTicks = 10 + (i * 4); 
+        const maxTicks = 8 + (i * 3); 
 
         await new Promise(resolve => {
             const interval = setInterval(() => {
@@ -184,7 +198,7 @@ async function startFullRaffle() {
                     slot.classList.add('finalized');
                     resolve();
                 }
-            }, 70);
+            }, 80);
         });
     }
 
@@ -196,12 +210,11 @@ function updateSlotUI(index, team, isFinal = false) {
     const slot = document.getElementById(`slot-${index}`);
     
     if(isFinal) {
-        slot.style.setProperty('--team-color', team.color);
         container.innerHTML = `
-            <div class="team-logo" style="background: ${team.bg}">
+            <div class="team-logo">
                 <img src="${team.avatar}" alt="${team.name}">
             </div>
-            <div class="team-name" style="color: ${team.color}">${team.name}</div>
+            <div class="team-name">${team.name}</div>
             <div class="member-box" id="member-box-${index}" onclick="drawMember(${index})">
                 <div class="winner-label">Representante</div>
                 <div class="winner-name" id="winner-name-${index}">Sortear Nome</div>
@@ -209,10 +222,10 @@ function updateSlotUI(index, team, isFinal = false) {
         `;
     } else {
         container.innerHTML = `
-            <div class="team-logo" style="background: #eee; opacity: 0.5">
-                <img src="${team.avatar}" alt="${team.name}" style="filter: grayscale(1)">
+            <div class="team-logo" style="opacity: 0.3; filter: grayscale(1)">
+                <img src="${team.avatar}" alt="${team.name}">
             </div>
-            <div class="team-name" style="color: #999">${team.name}</div>
+            <div class="team-name" style="color: #ccc">${team.name}</div>
         `;
     }
 }
@@ -229,7 +242,7 @@ async function drawMember(index) {
     
     const team = selectedTeams[index];
     let ticks = 0;
-    const maxTicks = 12;
+    const maxTicks = 15;
 
     const interval = setInterval(() => {
         const tempName = team.members[Math.floor(Math.random() * team.members.length)];
@@ -242,12 +255,11 @@ async function drawMember(index) {
             nameEl.textContent = finalName;
             box.classList.remove('spinning');
             box.classList.add('revealed');
-            nameEl.style.color = team.name;
+            nameEl.style.color = "var(--red)";
         }
-    }, 80);
+    }, 60);
 }
 
-// Inicia os slots vazios ao carregar
 createSlots();
 </script>
 
